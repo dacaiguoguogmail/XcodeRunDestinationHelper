@@ -1,7 +1,7 @@
 # XcodeRunDestinationHelper
 Xcode Run Destination Helper
 
-iOS Simulator List is too long. Do you want remove all of it?
+iOS Simulator List is too long. Do you want remove all of them?
 
 clone && compline && run  
 
