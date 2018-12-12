@@ -7,42 +7,114 @@
 //
 
 #import <Foundation/Foundation.h>
+NSString *logFilePathWithNameAndExt(NSString *fileName, NSString *ext) {
+    NSString *logFileName = [NSString stringWithFormat:@"%@_%@.%@", [[NSProcessInfo processInfo] globallyUniqueString], [@"XcodeRunDestinationHelper_" stringByAppendingString:fileName], ext?:@""];
+    NSString *logFilePath = [NSTemporaryDirectory() stringByAppendingPathComponent:logFileName];
+    return logFilePath;
+}
+
+NSString *plistFilePathWithName(NSString *fileName) {
+    NSString *logFilePath = logFilePathWithNameAndExt(fileName, @"plist");
+    return logFilePath;
+}
+
+
 
 int main(int argc, const char * argv[]) {
     @autoreleasepool {
-        NSString *logFileName = [NSString stringWithFormat:@"%@_%@.plist", [[NSProcessInfo processInfo] globallyUniqueString], @"XcodeRunDestinationHelper"];
-        NSString *logFilePath = [NSTemporaryDirectory() stringByAppendingPathComponent:logFileName];
-        NSString *command = [NSString stringWithFormat:@"defaults export com.apple.dt.Xcode %@", logFilePath];
-        system(command.UTF8String);
-        NSMutableDictionary *plistInfo = [NSMutableDictionary dictionaryWithContentsOfFile:logFilePath];
-        NSString *logFileName2 = [NSString stringWithFormat:@"%@_%@.json", [[NSProcessInfo processInfo] globallyUniqueString], @"XcodeRunDestinationHelper2"];
-        NSString *logFilePath2 = [NSTemporaryDirectory() stringByAppendingPathComponent:logFileName2];
-        NSString *command2 = [NSString stringWithFormat:@"xcrun simctl list -j > %@", logFilePath2];
-        system("xcrun simctl delete unavailable");
-        system(command2.UTF8String);
+        NSMutableArray<NSString *> *pathArray = [NSMutableArray array];
+        short ret = 0;
+
+        NSString *simulatorPlistPath = plistFilePathWithName(@"iphonesimulator");
+        [pathArray addObject:simulatorPlistPath];
+
+        NSString *exportSimulatorDefaultsCommand = [NSString stringWithFormat:@"defaults export com.apple.iphonesimulator %@", simulatorPlistPath];
+        ret = system(exportSimulatorDefaultsCommand.UTF8String);
+        if (ret != 0) {
+            exit(ret);
+        }
+
+        NSMutableDictionary *simulatorPlistInfo = [NSMutableDictionary dictionaryWithContentsOfFile:simulatorPlistPath];
+        simulatorPlistInfo[@"ShowSingleTouches"] = @(1);
+        simulatorPlistInfo[@"AllowFullscreenMode"] = @(1);
+
+
+        NSMutableDictionary<NSString *,NSMutableDictionary<NSString *, NSString *> *> *devicePreferences = simulatorPlistInfo[@"DevicePreferences"];
+        [devicePreferences enumerateKeysAndObjectsUsingBlock:^(NSString *key, NSMutableDictionary<NSString *,NSString *> *obj, BOOL *stop) {
+            obj[@"ChromeTint"] = @"#c0c0c0"; //simulator color
+        }];
+
+        NSString *newSimulatorPlistPath = plistFilePathWithName(@"newiphonesimulator");
+        [pathArray addObject:newSimulatorPlistPath];
+        [simulatorPlistInfo writeToFile:newSimulatorPlistPath atomically:YES];
+
+        NSString *importSimulatorDefaultsCommand = [NSString stringWithFormat:@"defaults import com.apple.iphonesimulator %@", newSimulatorPlistPath];
+        ret = system(importSimulatorDefaultsCommand.UTF8String);
+        if (ret != 0) {
+            exit(ret);
+        }
+
+        NSString *plistPath = plistFilePathWithName(@"xcodedefault");
+        [pathArray addObject:plistPath];
+
+        NSString *command = [NSString stringWithFormat:@"defaults export com.apple.dt.Xcode %@", plistPath];
+        ret = system(command.UTF8String);
+        if (ret != 0) {
+            exit(ret);
+        }
+
+        ret = system("xcrun simctl delete unavailable");
+        if (ret != 0) {
+            exit(ret);
+        }
+
+        NSString *jsonPath = logFilePathWithNameAndExt(@"devices", @"json");
+        [pathArray addObject:jsonPath];
+
+        NSString *command2Json = [NSString stringWithFormat:@"xcrun simctl list -j > %@", jsonPath];
+        ret = system(command2Json.UTF8String);
+        if (ret != 0) {
+            exit(ret);
+        }
+
+        NSData *jsonData = [NSData dataWithContentsOfFile:jsonPath];
+        if (jsonData.length == 0) {
+            exit(ret);
+        }
+        NSDictionary *simList = [NSJSONSerialization JSONObjectWithData:jsonData options:NSJSONReadingMutableContainers error:nil];
+
+
+        NSMutableDictionary *plistInfo = [NSMutableDictionary dictionaryWithContentsOfFile:plistPath];
         NSMutableArray *ignoreDeviceIdArray = plistInfo[@"DVTIgnoredDevices"];
-        
-        NSData *jsonData = [NSData dataWithContentsOfFile:logFilePath2];
-        NSDictionary *simList = [NSJSONSerialization JSONObjectWithData:jsonData options:(NSJSONReadingMutableContainers) error:nil];
+
         NSDictionary<NSString *, NSArray *> *allDevicesInfo = simList[@"devices"];
-        NSMutableArray *devicesIdArray = [NSMutableArray array];
         [allDevicesInfo enumerateKeysAndObjectsUsingBlock:^(NSString * _Nonnull key, NSArray<NSDictionary<NSString *, NSString *> *> * _Nonnull obj, BOOL * _Nonnull stop) {
             [obj enumerateObjectsUsingBlock:^(NSDictionary<NSString *,NSString *> * _Nonnull obj2, NSUInteger idx2, BOOL * _Nonnull stop2) {
-                [devicesIdArray addObject:obj2[@"udid"]];
-                if (![ignoreDeviceIdArray containsObject:obj2[@"udid"]]) {
-                    [ignoreDeviceIdArray addObject:obj2[@"udid"]];
+                NSString *udid = obj2[@"udid"];
+                if (![ignoreDeviceIdArray containsObject:udid]) {
+                    NSLog(@"add udid:%@", udid);
+                    [ignoreDeviceIdArray addObject:udid];
                 }
             }];
         }];
-//        NSLog(@"%@", ignoreDeviceIdArray);
-        NSString *logFileresultName = [NSString stringWithFormat:@"%@_%@_result.plist", [[NSProcessInfo processInfo] globallyUniqueString], @"XcodeRunDestinationHelper"];
-        NSString *logFilePath3 = [NSTemporaryDirectory() stringByAppendingPathComponent:logFileresultName];
-        BOOL ret = [plistInfo writeToFile:logFilePath3 atomically:YES];
-        assert(ret);
-        NSString *command3 = [NSString stringWithFormat:@"defaults import com.apple.dt.Xcode %@", logFilePath3];
-        int retNumber =   system(command3.UTF8String);
-        assert(retNumber == 0);
-        NSLog(@"had clean all simulator devices");
+        NSString *newPlistPath = plistFilePathWithName(@"newxcodedefault");
+        [pathArray addObject:newPlistPath];
+
+        BOOL success = [plistInfo writeToFile:newPlistPath atomically:YES];
+        assert(success);
+        NSString *importXcodeCommand = [NSString stringWithFormat:@"defaults import com.apple.dt.Xcode %@", newPlistPath];
+        ret = system(importXcodeCommand.UTF8String);
+        if (ret != 0) {
+            exit(ret);
+        }
+
+        NSFileManager *fn = [NSFileManager defaultManager];
+        [pathArray enumerateObjectsUsingBlock:^(NSString *aPath, NSUInteger idx, BOOL * _Nonnull stop) {
+            if ([fn fileExistsAtPath:aPath]) {
+                [fn removeItemAtPath:aPath error:nil];
+            }
+        }];
+        NSLog(@"please restart Xcode & Simulator");
     }
     return 0;
 }
