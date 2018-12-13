@@ -71,7 +71,7 @@ int main(int argc, const char * argv[]) {
         NSString *jsonPath = logFilePathWithNameAndExt(@"devices", @"json");
         [pathArray addObject:jsonPath];
 
-        NSString *command2Json = [NSString stringWithFormat:@"xcrun simctl list -j > %@", jsonPath];
+        NSString *command2Json = [NSString stringWithFormat:@"xcrun simctl list -j > %@", jsonPath]; // 'xcrun xcdevice list' also ok
         ret = system(command2Json.UTF8String);
         if (ret != 0) {
             exit(ret);
