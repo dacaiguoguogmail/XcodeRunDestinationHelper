@@ -86,17 +86,35 @@ int main(int argc, const char * argv[]) {
 
         NSMutableDictionary *plistInfo = [NSMutableDictionary dictionaryWithContentsOfFile:plistPath];
         NSMutableArray *ignoreDeviceIdArray = plistInfo[@"DVTIgnoredDevices"];
+        NSUInteger ignoreCount = ignoreDeviceIdArray.count;
 
+        NSSet *keepSet = [NSSet setWithObjects:@"iPhone XR", nil];
+//        NSSet *keepSet = [NSSet setWithObjects:@"562D22B9-B952-415F-A2A8-197B4975FE01", nil];
+        //
         NSDictionary<NSString *, NSArray *> *allDevicesInfo = simList[@"devices"];
         [allDevicesInfo enumerateKeysAndObjectsUsingBlock:^(NSString * _Nonnull key, NSArray<NSDictionary<NSString *, NSString *> *> * _Nonnull obj, BOOL * _Nonnull stop) {
             [obj enumerateObjectsUsingBlock:^(NSDictionary<NSString *,NSString *> * _Nonnull obj2, NSUInteger idx2, BOOL * _Nonnull stop2) {
                 NSString *udid = obj2[@"udid"];
-                if (![ignoreDeviceIdArray containsObject:udid]) {
+
+                if ([keepSet containsObject:obj2[@"name"]] || [keepSet containsObject:udid]) {
+                    // skip
+                    NSLog(@"Keep Device:%@ udid:%@", obj2[@"name"], udid);
+                } else if (![ignoreDeviceIdArray containsObject:udid]) {
                     NSLog(@"add udid:%@", udid);
                     [ignoreDeviceIdArray addObject:udid];
                 }
             }];
         }];
+        NSFileManager *fn = [NSFileManager defaultManager];
+        if (ignoreCount == ignoreDeviceIdArray.count) {
+            [pathArray enumerateObjectsUsingBlock:^(NSString *aPath, NSUInteger idx, BOOL * _Nonnull stop) {
+                if ([fn fileExistsAtPath:aPath]) {
+                    [fn removeItemAtPath:aPath error:nil];
+                }
+            }];
+            return 0;
+        }
+
         NSString *newPlistPath = plistFilePathWithName(@"newxcodedefault");
         [pathArray addObject:newPlistPath];
 
@@ -108,12 +126,12 @@ int main(int argc, const char * argv[]) {
             exit(ret);
         }
 
-        NSFileManager *fn = [NSFileManager defaultManager];
         [pathArray enumerateObjectsUsingBlock:^(NSString *aPath, NSUInteger idx, BOOL * _Nonnull stop) {
             if ([fn fileExistsAtPath:aPath]) {
                 [fn removeItemAtPath:aPath error:nil];
             }
         }];
+
         NSLog(@"please restart Xcode & Simulator");
     }
     return 0;
