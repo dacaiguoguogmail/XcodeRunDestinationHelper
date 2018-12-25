@@ -41,7 +41,7 @@ int main(int argc, const char * argv[]) {
 
         NSMutableDictionary<NSString *,NSMutableDictionary<NSString *, NSString *> *> *devicePreferences = simulatorPlistInfo[@"DevicePreferences"];
         [devicePreferences enumerateKeysAndObjectsUsingBlock:^(NSString *key, NSMutableDictionary<NSString *,NSString *> *obj, BOOL *stop) {
-            obj[@"ChromeTint"] = @"#c0c0c0"; //simulator color
+            obj[@"ChromeTint"] = @"#ffffff"; //simulator color
         }];
 
         NSString *newSimulatorPlistPath = plistFilePathWithName(@"newiphonesimulator");
