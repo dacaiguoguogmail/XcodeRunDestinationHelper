@@ -112,6 +112,7 @@ int main(int argc, const char * argv[]) {
                     [fn removeItemAtPath:aPath error:nil];
                 }
             }];
+            NSLog(@"please restart Simulator");
             return 0;
         }
 
