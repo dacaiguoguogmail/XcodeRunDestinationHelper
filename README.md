@@ -20,7 +20,7 @@ clone && compline && run
 ![splitWindow](https://raw.githubusercontent.com/dacaiguoguogmail/XcodeRunDestinationHelper/master/splitWindow.png)  
 2、默认的黑色边框看烦了？想换成银色边框？  
 ![sliver](https://raw.githubusercontent.com/dacaiguoguogmail/XcodeRunDestinationHelper/master/sliver.png)  
-3、想要现实单指触摸的小圆圈？  
+3、想要显示单指触摸的小圆圈？  
 
 4、模拟器运行目标太多，想一次清空？
 
