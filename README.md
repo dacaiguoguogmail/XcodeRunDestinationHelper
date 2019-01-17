@@ -14,4 +14,4 @@ Xcode Run Destination Helper
 ### 5、清理允许目标列表。可修改代码保留某个
 ![DestinationList](https://raw.githubusercontent.com/dacaiguoguogmail/XcodeRunDestinationHelper/master/DestinationList.png)  
 
-下载、按需修改、编译、运行即可
+### 下载、按需修改、编译、运行、重启Xcode和模拟器即可
