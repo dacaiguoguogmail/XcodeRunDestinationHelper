@@ -12,6 +12,9 @@ Xcode Run Destination Helper
 
 ### 4、delete unavailable simulator //删除不可用的模拟器
 ### 5、清理允许目标列表。可修改代码保留某个
+```
+NSSet *keepSet = [NSSet setWithObjects:@"iPhone XR", nil];
+```
 ![DestinationList](https://raw.githubusercontent.com/dacaiguoguogmail/XcodeRunDestinationHelper/master/DestinationList.png)  
 
 ### 下载、按需修改、编译、运行、重启Xcode和模拟器即可
