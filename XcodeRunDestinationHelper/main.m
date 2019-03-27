@@ -88,7 +88,7 @@ int main(int argc, const char * argv[]) {
         NSMutableArray *ignoreDeviceIdArray = plistInfo[@"DVTIgnoredDevices"];
         NSUInteger ignoreCount = ignoreDeviceIdArray.count;
 
-        NSSet *keepSet = [NSSet setWithObjects:@"iPhone XR", nil];
+        NSSet *keepSet = [NSSet setWithObjects:@"iPhone XR", @"iPhone Xʀ", nil];
 //        NSSet *keepSet = [NSSet setWithObjects:@"562D22B9-B952-415F-A2A8-197B4975FE01", nil];
         //
         NSDictionary<NSString *, NSArray *> *allDevicesInfo = simList[@"devices"];
