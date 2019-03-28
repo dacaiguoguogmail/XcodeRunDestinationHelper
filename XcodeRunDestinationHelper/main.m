@@ -24,7 +24,14 @@ int main(int argc, const char * argv[]) {
     @autoreleasepool {
         NSMutableArray<NSString *> *pathArray = [NSMutableArray array];
         short ret = 0;
-
+//        NSString *device_setPath = [NSString stringWithFormat:@"%@/Library/Developer/CoreSimulator/Devices/device_set.plist", NSHomeDirectory()];
+//        NSMutableDictionary *device_setInfo = [NSMutableDictionary dictionaryWithContentsOfFile:device_setPath];
+//        NSDictionary *DefaultDevices = device_setInfo[@"DefaultDevices"];
+//        NSDictionary<NSString *, NSString *> *iOS_12_1 = DefaultDevices[@"com.apple.CoreSimulator.SimRuntime.iOS-12-1"];
+//        [iOS_12_1 enumerateKeysAndObjectsUsingBlock:^(NSString * _Nonnull key, NSString * _Nonnull obj, BOOL * _Nonnull stop) {
+//            NSString *devideItem = [NSString stringWithFormat:@"%@/Library/Developer/CoreSimulator/Devices/%@", NSHomeDirectory(), obj];
+//            NSLog(@"%@", devideItem);
+//        }];
         NSString *simulatorPlistPath = plistFilePathWithName(@"iphonesimulator");
         [pathArray addObject:simulatorPlistPath];
 
@@ -88,7 +95,7 @@ int main(int argc, const char * argv[]) {
         NSMutableArray *ignoreDeviceIdArray = plistInfo[@"DVTIgnoredDevices"];
         NSUInteger ignoreCount = ignoreDeviceIdArray.count;
 
-        NSSet *keepSet = [NSSet setWithObjects:@"iPhone XR", @"iPhone Xʀ", nil];
+        NSSet *keepSet = [NSSet setWithObjects:@"iPhone XR", @"iPhone Xʀ", @"iPhone Xs", nil];
 //        NSSet *keepSet = [NSSet setWithObjects:@"562D22B9-B952-415F-A2A8-197B4975FE01", nil];
         //
         NSDictionary<NSString *, NSArray *> *allDevicesInfo = simList[@"devices"];
