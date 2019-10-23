@@ -6,7 +6,8 @@
 //  Copyright © 2018 dacaiguoguo. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
+@import Foundation;
+
 NSString *logFilePathWithNameAndExt(NSString *fileName, NSString *ext) {
     NSString *logFileName = [NSString stringWithFormat:@"%@_%@.%@", [[NSProcessInfo processInfo] globallyUniqueString], [@"XcodeRunDestinationHelper_" stringByAppendingString:fileName], ext?:@""];
     NSString *logFilePath = [NSTemporaryDirectory() stringByAppendingPathComponent:logFileName];
@@ -23,7 +24,7 @@ NSString *plistFilePathWithName(NSString *fileName) {
 int main(int argc, const char * argv[]) {
     @autoreleasepool {
         NSMutableArray<NSString *> *pathArray = [NSMutableArray array];
-        short ret = 0;
+        int ret = 0;
 //        NSString *device_setPath = [NSString stringWithFormat:@"%@/Library/Developer/CoreSimulator/Devices/device_set.plist", NSHomeDirectory()];
 //        NSMutableDictionary *device_setInfo = [NSMutableDictionary dictionaryWithContentsOfFile:device_setPath];
 //        NSDictionary *DefaultDevices = device_setInfo[@"DefaultDevices"];
@@ -48,7 +49,7 @@ int main(int argc, const char * argv[]) {
 
         NSMutableDictionary<NSString *,NSMutableDictionary<NSString *, NSString *> *> *devicePreferences = simulatorPlistInfo[@"DevicePreferences"];
         [devicePreferences enumerateKeysAndObjectsUsingBlock:^(NSString *key, NSMutableDictionary<NSString *,NSString *> *obj, BOOL *stop) {
-            obj[@"ChromeTint"] = @"#c0c0c0"; //simulator color
+            obj[@"ChromeTint"] = @"#53d4a2"; //simulator color
         }];
 
         NSString *newSimulatorPlistPath = plistFilePathWithName(@"newiphonesimulator");
@@ -95,7 +96,7 @@ int main(int argc, const char * argv[]) {
         NSMutableArray *ignoreDeviceIdArray = plistInfo[@"DVTIgnoredDevices"];
         NSUInteger ignoreCount = ignoreDeviceIdArray.count;
 
-        NSSet *keepSet = [NSSet setWithObjects:@"iPhone XR", @"iPhone Xʀ", @"iPhone Xs", @"iPhone SE", nil];
+        NSSet *keepSet = [NSSet setWithObjects:@"iPhone 11", @"iPhone 11 Pro", @"iPhone 11 Pro Max", @"iPhone SE", @"iPad Air (3rd generation)", nil];
 //        NSSet *keepSet = [NSSet setWithObjects:@"562D22B9-B952-415F-A2A8-197B4975FE01", nil];
         //
         NSDictionary<NSString *, NSArray *> *allDevicesInfo = simList[@"devices"];
