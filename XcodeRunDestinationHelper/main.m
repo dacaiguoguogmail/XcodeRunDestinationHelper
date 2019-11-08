@@ -78,7 +78,7 @@ int main(int argc, const char * argv[]) {
         // 设置模拟器边框颜色
         NSMutableDictionary<NSString *,NSMutableDictionary<NSString *, NSString *> *> *devicePreferences = simulatorPlistInfo[@"DevicePreferences"];
         [devicePreferences enumerateKeysAndObjectsUsingBlock:^(NSString *key, NSMutableDictionary<NSString *,NSString *> *obj, BOOL *stop) {
-            obj[@"ChromeTint"] = @"#53d4a2"; //simulator color
+            obj[@"ChromeTint"] = @"#5AC8FA"; //simulator color
         }];
 
         // 把修改过的模拟器配置写入文件
