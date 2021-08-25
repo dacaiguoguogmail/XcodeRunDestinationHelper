@@ -57,7 +57,7 @@ int main(int argc, const char * argv[]) {
         NSMutableArray<NSString *> *pathArray = [NSMutableArray array];
         int ret = 0;
         // TODO: xcodebuild -showsdks -json 获取 "platform" : "iphonesimulator" 的版本号 作为参数
-        logDefaultDevices(@"iOS-13-1");
+        logDefaultDevices(@"iOS-14-5");
         NSString *simulatorPlistPath = plistFilePathWithName(@"iphonesimulator");
         [pathArray addObject:simulatorPlistPath];
 
@@ -78,7 +78,7 @@ int main(int argc, const char * argv[]) {
         // 设置模拟器边框颜色
         NSMutableDictionary<NSString *,NSMutableDictionary<NSString *, NSString *> *> *devicePreferences = simulatorPlistInfo[@"DevicePreferences"];
         [devicePreferences enumerateKeysAndObjectsUsingBlock:^(NSString *key, NSMutableDictionary<NSString *,NSString *> *obj, BOOL *stop) {
-            obj[@"ChromeTint"] = @"#5AC8FA"; //simulator color
+            obj[@"ChromeTint"] = @"#666666"; //simulator color
         }];
 
         // 把修改过的模拟器配置写入文件
@@ -127,7 +127,7 @@ int main(int argc, const char * argv[]) {
         NSMutableArray *ignoreDeviceIdArray = plistInfo[@"DVTIgnoredDevices"];
 
         // 需要保留的、显示为运行目标的集合， 可以是名字，也可以是id
-        NSSet *keepSet = [NSSet setWithObjects:@"iPhone 11", @"iPhone 11 Pro", @"iPhone 11 Pro Max", @"iPhone SE", @"iPad Air (3rd generation)", nil];
+        NSSet *keepSet = [NSSet setWithObjects:@"iPhone 12", @"iPhone Xs", @"iPhone 12 Pro Max", @"iPhone 8", @"iPad Pro (12.9-inch) (4th generation)", nil];
         // NSSet *keepSet = [NSSet setWithObjects:@"562D22B9-B952-415F-A2A8-197B4975FE01", nil];
 
 
