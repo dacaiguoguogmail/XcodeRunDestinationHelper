@@ -127,7 +127,7 @@ int main(int argc, const char * argv[]) {
         NSMutableArray *ignoreDeviceIdArray = plistInfo[@"DVTIgnoredDevices"];
 
         // 需要保留的、显示为运行目标的集合， 可以是名字，也可以是id
-        NSSet *keepSet = [NSSet setWithObjects:@"iPhone 12", @"iPhone Xs", @"iPhone 12 Pro Max", @"iPhone 8", @"iPad Pro (12.9-inch) (4th generation)", nil];
+        NSSet *keepSet = [NSSet setWithObjects:@"iPhone 13", @"iPhone Xs", @"iPhone 13 Pro Max", @"iPhone 8", @"iPad Pro (12.9-inch) (4th generation)", nil];
         // NSSet *keepSet = [NSSet setWithObjects:@"562D22B9-B952-415F-A2A8-197B4975FE01", nil];
 
 
