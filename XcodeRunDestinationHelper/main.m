@@ -59,7 +59,7 @@ int main(int argc, const char * argv[]) {
         NSMutableArray<NSString *> *pathArray = [NSMutableArray array];
         int ret = 0;
         // TODO: xcodebuild -showsdks -json 获取 "platform" : "iphonesimulator" 的版本号 作为参数
-        logDefaultDevices(@"iOS-17-2");
+        logDefaultDevices(@"iOS-17-4");
         NSString *simulatorPlistPath = plistFilePathWithName(@"iphonesimulator");
         [pathArray addObject:simulatorPlistPath];
 
