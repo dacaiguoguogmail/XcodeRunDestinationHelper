@@ -59,7 +59,7 @@ int main(int argc, const char * argv[]) {
         NSMutableArray<NSString *> *pathArray = [NSMutableArray array];
         int ret = 0;
         // TODO: xcodebuild -showsdks -json 获取 "platform" : "iphonesimulator" 的版本号 作为参数
-        logDefaultDevices(@"iOS-17-4");
+        logDefaultDevices(@"iOS-17-5");
         NSString *simulatorPlistPath = plistFilePathWithName(@"iphonesimulator");
         [pathArray addObject:simulatorPlistPath];
 
@@ -129,7 +129,7 @@ int main(int argc, const char * argv[]) {
         NSMutableArray *ignoreDeviceIdArray = plistInfo[@"DVTIgnoredDevices"];
 
         // 需要保留的、显示为运行目标的集合， 可以是名字，也可以是id
-        NSSet *keepSet = [NSSet setWithObjects:@"iPhone 15 Pro", nil];
+        NSSet *keepSet = [NSSet setWithObjects:@"iPhone 15 Pro", @"iPhone SE (3rd generation)", @"iPhone 15 Pro Max", nil];
         // NSSet *keepSet = [NSSet setWithObjects:@"562D22B9-B952-415F-A2A8-197B4975FE01", nil];
 
 
