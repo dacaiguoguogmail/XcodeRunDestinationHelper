@@ -404,7 +404,7 @@
 		<key>D3C0920D-F254-4969-8B42-266B3EA5F457</key>
 		<false/>
 		<key>D46E1070-7032-427D-AE6C-45AD9E8FB72B</key>
-		<false/>
+		<integer>2</integer>
 		<key>D7597F7F-4447-4C13-957C-839E9F475813</key>
 		<false/>
 		<key>E8F93C38-D833-4796-B3F6-3405789C91F2</key>
@@ -431,7 +431,7 @@
 	<key>DVTDevicesWindowControllerSelectedDeviceIdentifier</key>
 	<string>00008120-000845A60168201E</string>
 	<key>DVTDevicesWindowControllerSelectedSimulatorIdentifier</key>
-	<string>64572626-8474-4CD4-B368-D2C1B4C2923D-mobiledevice</string>
+	<string>D46E1070-7032-427D-AE6C-45AD9E8FB72B-mobiledevice</string>
 	<key>DVTDisclosureViewDisclosedStates</key>
 	<dict>
 		<key>-3637793029362195651_com.apple.platform.watchos_rok.msdrigg.roam.watchkitapp</key>
@@ -519,7 +519,6 @@
 		<string>4B5A9626-1710-48DA-B6C8-8D2B80E798C0</string>
 		<string>170BA351-8FA2-4680-ADAE-260217A0BE9F</string>
 		<string>8B871301-B222-480F-BC5C-AD36720B39E5</string>
-		<string>D46E1070-7032-427D-AE6C-45AD9E8FB72B</string>
 		<string>099683A1-9F3C-4AA6-8BCC-E00EF23537D1</string>
 		<string>8BB232F0-2807-4281-BA60-E0FBD22A84C8</string>
 		<string>107652B6-E0F5-49D8-8C23-6B52CC6F3AE4</string>
