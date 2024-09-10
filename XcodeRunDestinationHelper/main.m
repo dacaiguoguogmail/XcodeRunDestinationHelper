@@ -59,7 +59,7 @@ int main(int argc, const char * argv[]) {
         NSMutableArray<NSString *> *pathArray = [NSMutableArray array];
         int ret = 0;
         // TODO: xcodebuild -showsdks -json 获取 "platform" : "iphonesimulator" 的版本号 作为参数
-        logDefaultDevices(@"iOS-17-5");
+        logDefaultDevices(@"iOS-18-0");
         NSString *simulatorPlistPath = plistFilePathWithName(@"iphonesimulator");
         [pathArray addObject:simulatorPlistPath];
 
@@ -147,7 +147,7 @@ int main(int argc, const char * argv[]) {
                     }
                     // skip
                     NSLog(@"Keep Device:%@ udid:%@", obj2[@"name"], udid);
-                } else if (![ignoreDeviceIdArray containsObject:udid]) {
+                } else {
                     NSLog(@"Add udid:%@", udid);
                     [ignoreDeviceIdArray addObject:udid];
                     ignoreDevicesChanged = YES;
