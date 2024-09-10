@@ -5,6 +5,8 @@
 //  Created by dacaiguoguo on 2018/11/14.
 //  Copyright © 2018 dacaiguoguo. All rights reserved.
 //
+// defaults export com.apple.dt.Xcode Downloads/xcodesim.plist
+// DVTIgnoredDevices
 
 @import Foundation;
 
@@ -57,7 +59,7 @@ int main(int argc, const char * argv[]) {
         NSMutableArray<NSString *> *pathArray = [NSMutableArray array];
         int ret = 0;
         // TODO: xcodebuild -showsdks -json 获取 "platform" : "iphonesimulator" 的版本号 作为参数
-        logDefaultDevices(@"iOS-13-1");
+        logDefaultDevices(@"iOS-18-0");
         NSString *simulatorPlistPath = plistFilePathWithName(@"iphonesimulator");
         [pathArray addObject:simulatorPlistPath];
 
@@ -78,7 +80,7 @@ int main(int argc, const char * argv[]) {
         // 设置模拟器边框颜色
         NSMutableDictionary<NSString *,NSMutableDictionary<NSString *, NSString *> *> *devicePreferences = simulatorPlistInfo[@"DevicePreferences"];
         [devicePreferences enumerateKeysAndObjectsUsingBlock:^(NSString *key, NSMutableDictionary<NSString *,NSString *> *obj, BOOL *stop) {
-            obj[@"ChromeTint"] = @"#5AC8FA"; //simulator color
+            obj[@"ChromeTint"] = @"#22ca92"; //simulator color
         }];
 
         // 把修改过的模拟器配置写入文件
@@ -125,14 +127,19 @@ int main(int argc, const char * argv[]) {
 
         // 获取要修改的，不显示为运行目标的数组，进行修改
         NSMutableArray *ignoreDeviceIdArray = plistInfo[@"DVTIgnoredDevices"];
+        
+        // 新增：获取或创建 DVTDeviceVisibilityPreferences
+        NSMutableDictionary *visibilityPreferences = plistInfo[@"DVTDeviceVisibilityPreferences"];
+        if (!visibilityPreferences) {
+            visibilityPreferences = [NSMutableDictionary dictionary];
+            plistInfo[@"DVTDeviceVisibilityPreferences"] = visibilityPreferences;
+        }
 
         // 需要保留的、显示为运行目标的集合， 可以是名字，也可以是id
-        NSSet *keepSet = [NSSet setWithObjects:@"iPhone 11", @"iPhone 11 Pro", @"iPhone 11 Pro Max", @"iPhone SE", @"iPad Air (3rd generation)", nil];
-        // NSSet *keepSet = [NSSet setWithObjects:@"562D22B9-B952-415F-A2A8-197B4975FE01", nil];
+        NSSet *keepSet = [NSSet setWithObjects:@"iPhone 15 Pro", @"iPhone SE (3rd generation)", @"iPhone 15 Pro Max", nil];
 
-
-        __block BOOL ignoreDevicesChanged = NO;
-        // 修改忽略列表
+        __block BOOL settingsChanged = NO;
+        // 修改忽略列表和可见性设置
         NSDictionary<NSString *, NSArray *> *allDevicesInfo = simList[@"devices"];
         [allDevicesInfo enumerateKeysAndObjectsUsingBlock:^(NSString * _Nonnull key, NSArray<NSDictionary<NSString *, NSString *> *> * _Nonnull obj, BOOL * _Nonnull stop) {
             [obj enumerateObjectsUsingBlock:^(NSDictionary<NSString *,NSString *> * _Nonnull obj2, NSUInteger idx2, BOOL * _Nonnull stop2) {
@@ -141,20 +148,23 @@ int main(int argc, const char * argv[]) {
                 if ([keepSet containsObject:obj2[@"name"]] || [keepSet containsObject:udid]) {
                     if ([ignoreDeviceIdArray containsObject:udid]) {
                         [ignoreDeviceIdArray removeObject:udid];
-                        ignoreDevicesChanged = YES;
+                        settingsChanged = YES;
                     }
-                    // skip
+                    visibilityPreferences[udid] = @1; // Always show
                     NSLog(@"Keep Device:%@ udid:%@", obj2[@"name"], udid);
-                } else if (![ignoreDeviceIdArray containsObject:udid]) {
-                    NSLog(@"Add udid:%@", udid);
-                    [ignoreDeviceIdArray addObject:udid];
-                    ignoreDevicesChanged = YES;
+                } else {
+                    NSLog(@"Hide udid:%@", udid);
+                    if (![ignoreDeviceIdArray containsObject:udid]) {
+                        [ignoreDeviceIdArray addObject:udid];
+                        settingsChanged = YES;
+                    }
+                    visibilityPreferences[udid] = @2; // Never show
                 }
             }];
         }];
 
-        // 如果忽略的模拟器列表没有修改就没必要导入了，只需要重启模拟器使设置生效即可
-        if (!ignoreDevicesChanged) {
+        // 如果设置没有修改就没必要导入了，只需要重启模拟器使设置生效即可
+        if (!settingsChanged) {
             NSLog(@"please restart Simulator");
             exitWithStatusAndPathArray(0, pathArray);
         }
